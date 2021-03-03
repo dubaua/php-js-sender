@@ -1,0 +1,38 @@
+.form {
+  &__field {
+    margin: 0;
+    & + & {
+      margin-top: 10px;
+      &--hidden {
+        margin-top: 0;
+      }
+    }
+  }
+
+  &__label {
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+  }
+
+  &__input {
+    width: 100%;
+    &:focus {
+      box-shadow: 0 0 0 2px #0066ff;
+    }
+  }
+
+  &__button {
+    width: 100%;
+  }
+
+  &__form-button {
+    margin-bottom: 8px;
+    width: 100%;
+  }
+}
