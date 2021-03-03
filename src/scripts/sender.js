@@ -7,7 +7,7 @@ const senderMessageSelector = '[data-sender-message]';
 const senderPrivacyAcceptSelector = '[data-sender-privacy-accept]';
 const senderSubmitButtonSelector = '[data-sender-submit-button]';
 
-const buttonLoadingClassname = 'sender-button--loading';
+const buttonLoadingClassname = 'sender__button--loading';
 const messageNodePositiveClassname = 'sender__message--positive';
 const messageNodeNegativeClassname = 'sender__message--negative';
 
@@ -36,6 +36,7 @@ for (let i = 0; i < senderNodeList.length; i++) {
     formData.append('target', senderFormNode.dataset.senderForm);
 
     senderSubmitButtonNode.classList.add(buttonLoadingClassname);
+    senderSubmitButtonNode.disabled = true;
     const headers = senderFormNode.encoding ? { 'Content-Type': senderFormNode.encoding } : null;
 
     let result = null;
@@ -59,6 +60,7 @@ for (let i = 0; i < senderNodeList.length; i++) {
     }
 
     senderSubmitButtonNode.classList.remove(buttonLoadingClassname);
+    senderSubmitButtonNode.disabled = false;
 
     if (success) {
       senderFormNode.remove();
