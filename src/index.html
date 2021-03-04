@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="sender" data-sender>
+    <div class="sender__description"></div>
+    <form
+      class="sender__form"
+      method="post"
+      data-sender-form="contactUs">
+        <div class="sender__form-field">
+          <label for="" class="sender__form-label">Name</label>
+          <input
+            type="text"
+            class="sender__form-input"
+          />
+          <div class="sender__error" data-sender-form-error="error"></div>
+        </div>
+        <div class="sender__form-field">
+          <label for="" class="sender__form-label">Name</label>
+          <input
+            type="text"
+            class="sender__form-input"
+          />
+          <div class="sender__error" data-sender-form-error="error"></div>
+        </div>
+      <div class="sender__form-field">
+        <button class="sender__button" type="submit" data-sender-submit-button disabled>
+          <div class="sender__button-loading-underlay"></div>
+          Начать сейчас 
+        </button>
+        <button class="sender__button" type="submit" data-sender-submit-button>
+          <div class="sender__button-loading-underlay"></div>
+          Начать сейчас 
+        </button>
+        <button class="sender__button sender__button--loading" type="submit" data-sender-submit-button disabled>
+          <div class="sender__button-loading-underlay"></div>
+          Начать сейчас 
+        </button>
+        <button class="sender__button sender__button--loading" type="submit" data-sender-submit-button>
+          <div class="sender__button-loading-underlay"></div>
+          Начать сейчас 
+        </button>
+      </div>
+      <div class="sender__form-field">
+        <div class="sender__checkbox">
+          <input
+            class="sender__checkbox-native"
+            type="checkbox"
+            value="1"
+            id="privacy"
+            name="privacy"
+            data-sender-privacy-accept
+            required />
+          <span class="sender__checkbox-box">
+            <span class="sender__checkbox-tick"></span>
+          </span>
+          <label for="privacy" class="sender__checkbox-label">Даю согласие на обработку персональных данных</label>
+        </div>
+        <div class="sender__error" data-sender-form-error="privacy"></div>
+      </div>
+    </form>
+    <div class="sender__message" data-sender-message></div>
+  </div>
+
+</body>
+</html>
