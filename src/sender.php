@@ -1,84 +1,67 @@
 <?php
 
-include('fields.php');
+include("forms.php");
 
-if (isset($_POST)) {
-  $target = $_POST['target'];
+$form = null;
+$result = false;
+$message = "";
+$errors = [];
+$formData = [];
 
-  $fields = $$target;
-
-  $errors = [];
-  $data = [];
-
-  if (!isset($_POST['privacy'])) {
-    $errors['privacy'] = "Согласие на обработку персональных данных обязательно";
+if (!isset($_POST)) {
+  $message = "Не получены никакие данные";
+} else {
+  $target = $_POST["target"];
+  $isFormExist = array_key_exists($target, $forms);
+  if ($isFormExist) {
+    $form = $forms[$target];
+    foreach ($form["fields"] as $key => $field) {
+      $value = htmlspecialchars(trim(strval($_POST[$key])));
+      $label = $field["label"];
+      $formData[$key] = [
+        "label" => $label,
+        "value" => $value,
+      ];
+      if ($field["required"] && empty($value)) {
+        $errors[$key] = "Не заполнено обязательное поле $label";
+      }
+    }
+  } else {
+    $message = "Попытка отправить несуществующую форму";
   }
 
-  foreach ($fields as $key => $field) {
-    $value = htmlspecialchars(trim(strval($_POST[$key])));
-    if ($field['required'] && empty($value)) {
-      $fieldLabel = $field['label'];
-      $errors[$key] = "Не заполнено обязательное поле $fieldLabel";
-    } else {
-      $data[$key] = [
-        'label' => $field['label'],
-        'value' => $value,
-      ];
-    }
+  if (!isset($_POST["privacy"])) {
+    $errors["privacy"] = "Согласие на обработку персональных данных обязательно";
   }
 
   if (count($errors) !== 0) {
-    echo json_encode([
-      "success" => false,
-      "message" => "Сообщение не отправлено",
-      "errors" => $errors,
-    ]);
-  } else {
-
-    $result = createAndSendMessage($data, $target);
-
-    $message = $result ? "Сообщение отправлено" : "Сообщение не отправлено";
-
-    echo json_encode([
-      "success" => $result,
-      "message" => $message,
-    ]);
+    $message = "Ошибки в полях";
+  } else if ($isFormExist) {
+    $result = createAndSendMessage($formData, $form);
+    $message = $result ? $form["success-message"] : "Не удалось отправить сообщение";
   }
-} else {
-  echo json_encode([
-    "success" => false,
-    "message" => "Не получены никакие данные",
-  ]);
 }
 
-function createAndSendMessage($data, $target) {
-  switch ($target) {
-    case 'jobs':
-      $subject = "Отклик на вакансию";
-    break;
+echo json_encode([
+  "success" => $result,
+  "message" => $message,
+  "errors" => $errors,
+]);
 
-    case 'order':
-      $subject = "Запрос товара";
-    break;
-
-    default:
-      $subject = "Заказ звонка";
-    break;
-  }
+function createAndSendMessage($formData, $form) {
+  $subject = $form["email"]["subject"];
+  $address = $form["email"]["to"];
+  $fromAddress = "noreply@".$_SERVER["HTTP_HOST"];
+  $fromName = $form["email"]["from"];
 
   $message = "<h1>$subject</h1>";
-
-  foreach ($data as $field) {
-    $label = $field['label'];
-    $value = $field['value'];
+  foreach ($formData as $field) {
+    $label = $field["label"];
+    $value = $field["value"];
     $message .= "<p>$label: <strong>$value</strong></p>";
   }
 
-  $domain = $_SERVER['HTTP_HOST'];
-
-
-    return sendEmail('dubaua@gmail.com', 'Отправщик почты', "noreply@$domain", $subject, $message);
-
+  return sendEmail($address, $fromName, $fromAddress, $subject, $message);
 }
 
 function sendEmail($address, $fromName, $fromAdderss, $subject, $message) {
@@ -91,5 +74,3 @@ function sendEmail($address, $fromName, $fromAdderss, $subject, $message) {
 
   return mail($address, $subjectBase64, $message, $headers, "-f $fromAdderss");
 }
-
-?>

@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import axios from 'axios';
 
 const senderSelector = '[data-sender]';
@@ -33,8 +32,6 @@ for (let i = 0; i < senderNodeList.length; i++) {
 
     const formData = new FormData(senderFormNode);
 
-    formData.append('target', senderFormNode.dataset.senderForm);
-
     senderSubmitButtonNode.classList.add(buttonLoadingClassname);
     senderSubmitButtonNode.disabled = true;
     const headers = senderFormNode.encoding ? { 'Content-Type': senderFormNode.encoding } : null;
@@ -55,7 +52,7 @@ for (let i = 0; i < senderNodeList.length; i++) {
 
     const { success, message, errors } = result;
 
-    if (errors) {
+    if (errors && errors.length) {
       printErrors(errors);
     }
 
@@ -63,7 +60,12 @@ for (let i = 0; i < senderNodeList.length; i++) {
     senderSubmitButtonNode.disabled = false;
 
     if (success) {
-      senderFormNode.remove();
+      senderFormNode.reset();
+      setTimeout(() => {
+        senderMessageNode.textContent = null;
+        senderMessageNode.classList.remove(messageNodePositiveClassname);
+        senderMessageNode.classList.remove(messageNodeNegativeClassname);
+      }, 3000);
     }
 
     senderMessageNode.textContent = message;
@@ -82,7 +84,9 @@ function printErrors(errors) {
     if (Object.prototype.hasOwnProperty.call(errors, key)) {
       const errorMessage = errors[key];
       const errorMessageNode = document.querySelector(`[data-sender-form-error="${key}"]`);
-      errorMessageNode.textContent = errorMessage;
+      if (errorMessageNode) {
+        errorMessageNode.textContent = errorMessage;
+      }
     }
   }
 }
